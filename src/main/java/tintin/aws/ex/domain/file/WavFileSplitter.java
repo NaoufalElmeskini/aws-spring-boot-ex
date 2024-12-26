@@ -1,4 +1,4 @@
-package domain.file;
+package tintin.aws.ex.domain.file;
 
 import javax.sound.sampled.*;
 import java.io.ByteArrayInputStream;

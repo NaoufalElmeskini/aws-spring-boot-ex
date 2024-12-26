@@ -1,4 +1,4 @@
-package domain.port;
+package tintin.aws.ex.domain.port;
 
 import java.io.InputStream;
 

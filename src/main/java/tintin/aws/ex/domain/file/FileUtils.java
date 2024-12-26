@@ -1,4 +1,4 @@
-package domain.file;
+package tintin.aws.ex.domain.file;
 
 import org.apache.poi.xwpf.usermodel.XWPFDocument;
 import org.apache.poi.xwpf.usermodel.XWPFNumbering;

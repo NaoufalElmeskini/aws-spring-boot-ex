@@ -1,14 +1,17 @@
+# prerequisite :
+    # existing lambda object access point : arn:aws:s3-object-lambda:eu-north-1:540556776725:accesspoint/my-obj-lambda-acc-point
+    # existing object key : tintin.jpg
 # usage :
-#   .\s3getObjectViaAcPoint.ps1 tintin.jpg
+    #   .\s3getObjectViaAcPoint.ps1 tintin.jpg
 param(
     [string]$key
 )
 
 if (!$key) {
-    Write-Host "/!\ you didn't insert key"
+    Write-Host "/!\ (exiting...) you didn't insert key"
     exit
 } else {
-    Write-Output "loading... get-object with name: " $key
+    Write-Output "(loading...) get-object with name: " $key
 }
 
 #get-object via bucketName

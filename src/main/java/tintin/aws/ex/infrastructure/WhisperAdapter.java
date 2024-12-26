@@ -1,9 +1,9 @@
-package infrastructure;
+package tintin.aws.ex.infrastructure;
 
-import domain.file.FileUtils;
-import domain.file.WavFileSplitter;
-import domain.port.TranscriberOutput;
 import lombok.extern.slf4j.Slf4j;
+import tintin.aws.ex.domain.file.FileUtils;
+import tintin.aws.ex.domain.file.WavFileSplitter;
+import tintin.aws.ex.domain.port.TranscriberOutput;
 
 import java.io.File;
 import java.io.IOException;
@@ -28,7 +28,7 @@ import java.util.List;
 // max size is 25MB; otherwise need to break the file into chunks
 // See the WavFileSplitter class for that
 @Slf4j
-public class UglyWhisperAdapter implements TranscriberOutput {
+public class WhisperAdapter implements TranscriberOutput {
     public final static int MAX_ALLOWED_SIZE = 25 * 1024 * 1024;
     public final static int MAX_CHUNK_SIZE_BYTES = 20 * 1024 * 1024;
 
@@ -86,6 +86,41 @@ public class UglyWhisperAdapter implements TranscriberOutput {
     }
 
     @Override
+    public String transcribe(InputStream contentStream) throws IOException {
+        // Collect the transcriptions of each chunk
+        String transcription = "";
+
+        // First prompt is the word list
+        String prompt = WORD_LIST;
+
+        if (contentStream.readAllBytes().length <= MAX_ALLOWED_SIZE) {
+            transcription = client.transcribeChunk(prompt, contentStream);
+        } else {
+            System.out.println("too big, yo fail.");
+        }
+
+        return transcription;
+    }
+
+
+    private void processBigFile(File file, String prompt, List<String> transcriptions) {
+        System.out.println("too big yo fail!");
+        var splitter = new WavFileSplitter();
+        List<File> chunks = splitter.splitWavFileIntoChunks(file);
+        for (File chunk : chunks) {
+            // Subsequent prompts are the previous transcriptions
+            String transcription = client.transcribeChunk(prompt, chunk);
+            transcriptions.add(transcription);
+            prompt = transcription;
+
+            // After transcribing, no longer need the chunk
+            if (!chunk.delete()) {
+                log.info("Failed to delete {}", chunk.getName());
+            }
+        }
+    }
+
+    @Override
     public String transcribe(File file) {
         String fileName = file.getName();
 //        FileUtils.createTranscriptFile(fileName);
@@ -126,17 +161,13 @@ public class UglyWhisperAdapter implements TranscriberOutput {
     @Override
     public String transcribe(InputStream contentStream) throws IOException {
         // Collect the transcriptions of each chunk
-        System.out.println("UglyWhisperAdapter.transcribe");
+        log.info("UglyWhisperAdapter.transcribe");
         String transcription = "";
 
         // First prompt is the word list
         String prompt = WORD_LIST;
 
-        if (contentStream.readAllBytes().length <= MAX_ALLOWED_SIZE) {
-            transcription = client.transcribeChunk(prompt, contentStream);
-        } else {
-            System.out.println("too big, yo fail.");
-        }
+        transcription = client.transcribeChunk(prompt, contentStream);
 
         return transcription;
     }

@@ -1,7 +1,7 @@
 # prerequisite :
 #   aws sdk configured locally
 # usage :
-#   .\lambdaDeploy.ps1 MaLambda25
+#   .\lambdaDeploy.ps1 MyTransformerLambda
 
 
 param(

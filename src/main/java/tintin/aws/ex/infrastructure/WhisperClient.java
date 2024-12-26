@@ -1,4 +1,4 @@
-package infrastructure;
+package tintin.aws.ex.infrastructure;
 
 import lombok.extern.slf4j.Slf4j;
 import org.apache.hc.client5.http.classic.methods.HttpPost;
@@ -49,16 +49,17 @@ public class WhisperClient {
 	}
 
 	public String transcribeChunk(String prompt, InputStream chunkStream) {
-		System.out.println("(sout) transcribeChunk...");
-		System.out.println("(sout) key: " + KEY);
-		log.info("(log) transcribeChunk {}", chunkStream.toString());
+		log.info("transcribeChunk {}", chunkStream.toString());
 
 		try (CloseableHttpClient client = HttpClients.createDefault()) {
 			HttpPost httpPost = new HttpPost(URL);
 			httpPost.setHeader("Authorization", "Bearer %s".formatted(KEY));
 
+//			byte[] buffer = chunkStream.readAllBytes();
+//			Files.write(Paths.get("debug-output2.wav"), buffer);
+
 			HttpEntity entity = MultipartEntityBuilder.create().setContentType(ContentType.MULTIPART_FORM_DATA)
-					.addPart("file", new InputStreamBody(chunkStream, ContentType.DEFAULT_BINARY))
+					.addPart("file", new InputStreamBody(chunkStream, ContentType.DEFAULT_BINARY, "file.wav"))
 					.addPart("model", new StringBody(MODEL, ContentType.DEFAULT_TEXT))
 					.addPart("response_format", new StringBody("text", ContentType.DEFAULT_TEXT))
 					.addPart("prompt", new StringBody(prompt, ContentType.DEFAULT_TEXT)).build();

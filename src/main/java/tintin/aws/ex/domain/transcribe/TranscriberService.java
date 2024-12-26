@@ -1,10 +1,10 @@
-package domain.transcribe;
+package tintin.aws.ex.domain.transcribe;
 
-import domain.file.FileUtils;
-import domain.port.TranscriberInput;
-import domain.port.TranscriberOutput;
-import lombok.AllArgsConstructor;
-import org.springframework.stereotype.Service;
+import lombok.extern.slf4j.Slf4j;
+import tintin.aws.ex.domain.file.FileUtils;
+import tintin.aws.ex.domain.port.TranscriberInput;
+import tintin.aws.ex.domain.port.TranscriberOutput;
+import tintin.aws.ex.infrastructure.WhisperAdapter;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -12,13 +12,15 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 
-import static domain.file.FileUtils.createTranscriptFile;
+import static tintin.aws.ex.domain.file.FileUtils.createTranscriptFile;
 
-@Service
-@AllArgsConstructor
+/**
+ * ugly = DI unavailable
+ */
+@Slf4j
 public class TranscriberService implements TranscriberInput {
 
-	private final TranscriberOutput output;
+	private final TranscriberOutput output = new WhisperAdapter();
 
 	@Override
 	public String getTranscription(String fileName) {
@@ -39,6 +41,7 @@ public class TranscriberService implements TranscriberInput {
 
 	@Override
 	public String getTranscription(InputStream contentStream) {
+		log.info("getTranscription...");
 		try {
 			return output.transcribe(contentStream);
 		} catch (IOException e) {
