@@ -1,7 +1,7 @@
 # prerequisite :
 #   aws sdk configured locally
-# use me :
-#   .\deploy.ps1 MaLambda25
+# usage :
+#   .\lambdaDeploy.ps1 MaLambda25
 
 
 param(
