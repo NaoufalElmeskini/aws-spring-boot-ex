@@ -4,9 +4,7 @@ import org.apache.poi.xwpf.usermodel.XWPFDocument;
 import org.apache.poi.xwpf.usermodel.XWPFNumbering;
 import org.apache.poi.xwpf.usermodel.XWPFParagraph;
 import org.apache.poi.xwpf.usermodel.XWPFRun;
-import org.springframework.web.multipart.MultipartFile;
 
-import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.UncheckedIOException;
@@ -169,15 +167,15 @@ public class FileUtils {
         }
     }
 
-    public static File copyToLocalFile(MultipartFile multipartFile) {
-		try {
-            File audioFile = new File(Paths.get(INPUT_RESOURCES_PATH, multipartFile.getOriginalFilename()).toUri()); // input
-            multipartFile.transferTo(audioFile);
-            return audioFile;
-        } catch (IOException e) {
-            throw new RuntimeException(e);
-        }
-    }
+//    public static File copyToLocalFile(MultipartFile multipartFile) {
+//		try {
+//            File audioFile = new File(Paths.get(INPUT_RESOURCES_PATH, multipartFile.getOriginalFilename()).toUri()); // input
+//            multipartFile.transferTo(audioFile);
+//            return audioFile;
+//        } catch (IOException e) {
+//            throw new RuntimeException(e);
+//        }
+//    }
 
     public static Path createTranscriptFile(String fileName) {
         return Paths.get(FileUtils.OUTPUT_RESOURCES_PATH, fileName + ".txt");

@@ -3,8 +3,7 @@ package domain.transcribe;
 import domain.file.FileUtils;
 import domain.port.TranscriberInput;
 import domain.port.TranscriberOutput;
-import lombok.AllArgsConstructor;
-import org.springframework.stereotype.Service;
+import infrastructure.UglyWhisperAdapter;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -14,11 +13,12 @@ import java.nio.file.Paths;
 
 import static domain.file.FileUtils.createTranscriptFile;
 
-@Service
-@AllArgsConstructor
-public class TranscriberService implements TranscriberInput {
+/**
+ * ugly = DI unavailable
+ */
+public class UglyTranscriberService implements TranscriberInput {
 
-	private final TranscriberOutput output;
+	private final TranscriberOutput output = new UglyWhisperAdapter();
 
 	@Override
 	public String getTranscription(String fileName) {
@@ -39,8 +39,10 @@ public class TranscriberService implements TranscriberInput {
 
 	@Override
 	public String getTranscription(InputStream contentStream) {
+		System.out.println("UglyTranscriberService.getTranscription");
 		try {
 			return output.transcribe(contentStream);
+
 		} catch (IOException e) {
 			throw new RuntimeException(e);
 		}

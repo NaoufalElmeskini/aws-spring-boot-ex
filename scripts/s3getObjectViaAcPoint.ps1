@@ -8,7 +8,7 @@ if (!$key) {
     Write-Host "/!\ you didn't insert key"
     exit
 } else {
-    Write-Output "key with name: " $key
+    Write-Output "loading... get-object with name: " $key
 }
 
 #get-object via bucketName

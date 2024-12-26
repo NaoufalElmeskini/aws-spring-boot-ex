@@ -3,9 +3,7 @@ package infrastructure;
 import domain.file.FileUtils;
 import domain.file.WavFileSplitter;
 import domain.port.TranscriberOutput;
-import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.stereotype.Service;
 
 import java.io.File;
 import java.io.IOException;
@@ -29,11 +27,8 @@ import java.util.List;
 
 // max size is 25MB; otherwise need to break the file into chunks
 // See the WavFileSplitter class for that
-
-@Service
-@AllArgsConstructor
 @Slf4j
-public class WhisperAdapter implements TranscriberOutput {
+public class UglyWhisperAdapter implements TranscriberOutput {
     public final static int MAX_ALLOWED_SIZE = 25 * 1024 * 1024;
     public final static int MAX_CHUNK_SIZE_BYTES = 20 * 1024 * 1024;
 
@@ -45,7 +40,7 @@ public class WhisperAdapter implements TranscriberOutput {
                     "Tales from the jar side", "Spring Boot", "Spring Framework", "Spring Data", "Spring Security"));
 
 
-    private final WhisperClient client;
+    private final WhisperClient client = new WhisperClient();
 
     @Override
     public String transcribe(String fileName) {
@@ -74,26 +69,7 @@ public class WhisperAdapter implements TranscriberOutput {
         return transcription;
     }
 
-    @Override
-    public String transcribe(InputStream contentStream) throws IOException {
-        // Collect the transcriptions of each chunk
-        String transcription = "";
-
-        // First prompt is the word list
-        String prompt = WORD_LIST;
-
-        if (contentStream.readAllBytes().length <= MAX_ALLOWED_SIZE) {
-            transcription = client.transcribeChunk(prompt, contentStream);
-        } else {
-            System.out.println("too big, yo fail.");
-        }
-
-        return transcription;
-    }
-
-
     private void processBigFile(File file, String prompt, List<String> transcriptions) {
-        System.out.println("too big yo fail!");
         var splitter = new WavFileSplitter();
         List<File> chunks = splitter.splitWavFileIntoChunks(file);
         for (File chunk : chunks) {
@@ -144,6 +120,24 @@ public class WhisperAdapter implements TranscriberOutput {
                 fileName.lastIndexOf("/") + 1);
         FileUtils.writeTextToFile(transcription,
                 fileNameWithoutPath.replace(".wav", ".txt"));
+        return transcription;
+    }
+
+    @Override
+    public String transcribe(InputStream contentStream) throws IOException {
+        // Collect the transcriptions of each chunk
+        System.out.println("UglyWhisperAdapter.transcribe");
+        String transcription = "";
+
+        // First prompt is the word list
+        String prompt = WORD_LIST;
+
+        if (contentStream.readAllBytes().length <= MAX_ALLOWED_SIZE) {
+            transcription = client.transcribeChunk(prompt, contentStream);
+        } else {
+            System.out.println("too big, yo fail.");
+        }
+
         return transcription;
     }
 }
