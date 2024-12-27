@@ -55,9 +55,6 @@ public class WhisperClient {
 			HttpPost httpPost = new HttpPost(URL);
 			httpPost.setHeader("Authorization", "Bearer %s".formatted(KEY));
 
-//			byte[] buffer = chunkStream.readAllBytes();
-//			Files.write(Paths.get("debug-output2.wav"), buffer);
-
 			HttpEntity entity = MultipartEntityBuilder.create().setContentType(ContentType.MULTIPART_FORM_DATA)
 					.addPart("file", new InputStreamBody(chunkStream, ContentType.DEFAULT_BINARY, "file.wav"))
 					.addPart("model", new StringBody(MODEL, ContentType.DEFAULT_TEXT))
