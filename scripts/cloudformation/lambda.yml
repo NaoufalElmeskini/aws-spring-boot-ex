@@ -1,0 +1,43 @@
+# usage :
+## aws cloudformation create-stack
+##  --stack-name lambda3 --template-body file://C:\xxx\lambda.yml
+##  --capabilities CAPABILITY_AUTO_EXPAND CAPABILITY_IAM
+
+AWSTemplateFormatVersion: '2010-09-09'
+Transform: AWS::Serverless-2016-10-31
+Resources:
+  SomeS3Bucket:
+    Type: AWS::S3::Bucket
+    Properties:
+      BucketEncryption:
+        ServerSideEncryptionConfiguration:
+          - ServerSideEncryptionByDefault:
+              SSEAlgorithm: AES256
+      PublicAccessBlockConfiguration:
+        BlockPublicAcls: true
+        BlockPublicPolicy: true
+        IgnorePublicAcls: true
+        RestrictPublicBuckets: true
+      VersioningConfiguration:
+        Status: Suspended
+
+  ResizeFunction:
+    Type: 'AWS::Serverless::Function'
+    Properties:
+      CodeUri: s3://transcr-files/examples-1.jar
+      Handler: example.Handler::handleRequest
+      Runtime: java17
+      MemorySize: 2048
+      # The function needs permission to call back to the S3 Object Lambda Access Point with the WriteGetObjectResponse.
+      Policies:
+        - S3CrudPolicy:
+            BucketName: !Ref SomeS3Bucket
+        - Statement:
+            - Effect: Allow
+              Action: 's3-object-lambda:WriteGetObjectResponse'
+              Resource: '*'
+
+Outputs:
+  ResizeFunctionName:
+    Value: !Ref ResizeFunction
+    Description: Lambda name.

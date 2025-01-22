@@ -31,6 +31,10 @@ public class WhisperClient {
 	public String transcribeChunk(String prompt, File chunkFile) {
 		log.info("Transcribing {}", chunkFile.getName());
 
+		if (KEY == null || KEY.isEmpty()) {
+			throw new IllegalStateException("OpenAI key not set...");
+		}
+
 		try (CloseableHttpClient client = HttpClients.createDefault()) {
 			HttpPost httpPost = new HttpPost(URL);
 			httpPost.setHeader("Authorization", "Bearer %s".formatted(KEY));
