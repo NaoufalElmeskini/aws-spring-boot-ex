@@ -1,8 +1,8 @@
 # prerequisite :
-    # existing lambda object access point : arn:aws:s3-object-lambda:eu-north-1:540556776725:accesspoint/my-obj-lambda-acc-point
+    # existing lambda object access point : arn:aws:s3-object-lambda:eu-north-1:xxx:accesspoint/my-obj-lambda-acc-point
     # existing object key : tintin.wav
 # usage :
-    #   .\s3getObjectViaObjectLambda.ps1 tintin.wav arn:aws:xxx/my-obj-lambda
+    # example .\s3getObjectViaObjectLambda.ps1 tintin.wav arn:aws:xxx/my-obj-lambda
 param(
     [string]$key,
     [string]$arn
