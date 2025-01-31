@@ -31,6 +31,10 @@ public class WhisperClient {
 	public String transcribeChunk(String prompt, File chunkFile) {
 		log.info("Transcribing {}", chunkFile.getName());
 
+		if (KEY == null || KEY.isEmpty()) {
+			throw new IllegalStateException("OpenAI key not set...");
+		}
+
 		try (CloseableHttpClient client = HttpClients.createDefault()) {
 			HttpPost httpPost = new HttpPost(URL);
 			httpPost.setHeader("Authorization", "Bearer %s".formatted(KEY));
@@ -54,9 +58,6 @@ public class WhisperClient {
 		try (CloseableHttpClient client = HttpClients.createDefault()) {
 			HttpPost httpPost = new HttpPost(URL);
 			httpPost.setHeader("Authorization", "Bearer %s".formatted(KEY));
-
-//			byte[] buffer = chunkStream.readAllBytes();
-//			Files.write(Paths.get("debug-output2.wav"), buffer);
 
 			HttpEntity entity = MultipartEntityBuilder.create().setContentType(ContentType.MULTIPART_FORM_DATA)
 					.addPart("file", new InputStreamBody(chunkStream, ContentType.DEFAULT_BINARY, "file.wav"))

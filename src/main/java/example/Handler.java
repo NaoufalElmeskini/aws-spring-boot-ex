@@ -25,6 +25,9 @@ public class Handler {
 	private TranscriberInput transcriberInput = new TranscriberService();
 
 	public void handleRequest(S3ObjectLambdaEvent event, Context context) throws Exception {
+		String traceId = System.getenv("_X_AMZN_TRACE_ID");
+		log.info("Trace ID: {}", traceId);
+		log.info("starting... ");
 		log.info("event: " + event.toString());
 		log.info("context: " + context.toString());
 
@@ -40,8 +43,10 @@ public class Handler {
 		log.info("presignedResponse.full : "+ presignedResponse);
 
 		// Stream the original bytes back to the caller.
-		InputStream contentStream = presignedResponse.body();
-		String transcript = transcriberInput.getTranscription(contentStream);
+		//		fixme
+		//	InputStream contentStream = presignedResponse.body();
+		//	String transcript = transcriberInput.getTranscription(contentStream);
+		String transcript = "dump transcript";
 		log.info("success! transcript: " + transcript);
 
 		AmazonS3 s3Client = AmazonS3Client.builder().build();

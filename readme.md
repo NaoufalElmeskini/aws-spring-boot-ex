@@ -7,6 +7,10 @@ Ce projet permet le scénario suivant :
 - transcrire une fichier audio via une api [speech-to-text](https://fr.wikipedia.org/wiki/Reconnaissance_automatique_de_la_parole) comme [Whisper](https://en.wikipedia.org/wiki/Whisper_(speech_recognition_system)) 
 
 ---
+### Utilisation
+(à venir)
+
+---
 ### Deploiement
 ce projet inclut des [scripts](scripts) permettant de 
 - déployer automatiquement une [lambda AWS](https://en.wikipedia.org/wiki/AWS_Lambda)

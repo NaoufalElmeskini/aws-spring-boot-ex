@@ -1,0 +1,1 @@
+aws s3 cp ..\..\target\examples-1.jar s3://transcr-files
